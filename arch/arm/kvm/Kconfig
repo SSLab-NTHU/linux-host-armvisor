@@ -1,0 +1,91 @@
+#
+# KVM configuration
+#
+
+source "virt/kvm/Kconfig"
+
+menuconfig VIRTUALIZATION
+	bool "Virtualization"
+	---help---
+	  Say Y here to get to see options for using your Linux host to run
+	  other operating systems inside virtual machines (guests).
+	  This option alone does not add any kernel code.
+
+	  If you say N, all options in this submenu will be skipped and
+	  disabled.
+
+if VIRTUALIZATION
+
+config KVM
+	tristate "Kernel-based Virtual Machine (KVM) support"
+	depends on EXPERIMENTAL
+	select PREEMPT_NOTIFIERS
+	select ANON_INODES
+	select KVM_MMIO
+	---help---
+	  Support hosting virtualized guest machines. You will also
+	  need to select one or more of the processor modules below.
+
+	  This module provides access to the hardware capabilities through
+	  a character device node named /dev/kvm.
+
+	  If unsure, say N.
+
+config GUEST_OPT
+	bool "Guest optimization support"
+	depends on KVM
+	default MASTER
+
+config MEM_OPT
+	bool "memory optimization suppoprt"
+	depends on KVM && GUEST_OPT
+	default n
+
+config CPU_OPT
+	bool "cpu optimization support"
+	depends on KVM && GUEST_OPT
+	default n
+
+config SWI_OPT
+	bool "support swi deliver in fast trap"
+	depends on KVM && GUEST_OPT && CPU_OPT
+	default n
+
+config INTR_OPT
+	bool "support interrupt deliver model"
+	depends on KVM && GUEST_OPT && CPU_OPT
+	default n
+
+config PROFILE_MODEL
+	bool "Enable kvm profiling model"
+	depends on KVM
+	default n
+
+config PROFILE_COUNT
+	bool "Enable kvm profiling count"
+	depends on KVM && PROFILE_MODEL
+	default y
+
+config PROFILE_PC
+	bool "Enable kvm profiling pc"
+	depends on KVM && PROFILE_MODEL
+	default n
+
+config VIRT_REGS_ADDR
+    hex "Share registers' address"
+    default 0xffff1c00
+
+config KVM_TRACE
+	bool "KVM trace support"
+	depends on KVM && MARKERS && SYSFS
+	select RELAY
+	select DEBUG_FS
+	default n
+	---help---
+	  This option allows reading a trace of kvm-related events through
+	  relayfs.  Note the ABI is not considered stable and will be
+	  modified in future updates.
+
+source drivers/virtio/Kconfig
+
+endif # VIRTUALIZATION

@@ -1,7 +1,7 @@
 /*
  * Automatically generated C config: don't edit
  * Linux/arm 2.6.38.7 Kernel Configuration
- * Mon Aug 27 17:44:51 2012
+ * Thu Aug 30 04:59:09 2012
  */
 #define CONFIG_DMA_API_DEBUG 1
 #define CONFIG_SCSI_DMA 1
